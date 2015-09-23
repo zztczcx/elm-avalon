@@ -8,7 +8,9 @@ import Json.Decode as Json
 import Signal exposing (Signal, Address)
 import String
 import Window
+import Main exposing( Action, Model)
 
+---- UPDATE -----
 
 ---- VIEW ----
 
