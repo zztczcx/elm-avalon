@@ -1,4 +1,4 @@
-import Lob exposing (init, update, view)
+import Avalon exposing (init, update, view)
 import StartApp.Simple exposing (start)
 
 

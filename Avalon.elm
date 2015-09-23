@@ -10,66 +10,68 @@ import String
 import Window
 
 
-import Lob
-import Room
-
+---- Model -----
 type Stage
     = Lob
     | Room
     | Game
 
----- MODEL ----
-
 type alias Model = 
     { stage : Stage
     }
 
-emptyModel : Model
-emptyModel = 
-    { stage = Lob
-    }
+init: Model
+init = 
+  { stage = Lob
+
+  }
 
 ---- UPDATE -----
 type Action
-    = NoOp
-    | ToRoom
-    | BeginGame
-
+    = CreateRoom
+    | EnterRoom
+    | StartGame
 
 update : Action -> Model -> Model
 update action model =
-    case action of
-      NoOp -> model
-
+  case action of
+    EnterRoom ->
+      { model | stage <- Room }
+    StartGame ->
+      { model | stage <- Game }
 
 ---- VIEW ----
 
 view: Address Action -> Model -> Html
 view address model =
-  case model.stage of
+  case model.stage of 
     Lob ->
-      Lob.view address model
+      lobView address model
+    Room ->
+      roomView address model
+    Game ->
+      gameView address model
 
 
----- INPUTS ----
+lobView address model =
+    div 
+      []
+      [ ul 
+          []
+          [li [] [button [ onClick address CreateRoom ] [ text "CreateRoom" ]]
+          ,li [] [button [ onClick address EnterRoom ] [ text "EnterRoom" ]]
+          ]
+      ]
 
--- wire the entire application together
-main : Signal Html
-main =
-  Signal.map (view actions.address) model
+roomView address model = 
+    div 
+      []
+      [text "Room"
+      ,button [ onClick address StartGame ] [ text "StartGame" ]
+      ]
 
+gameView address model = 
+    div
+      []
+      [text "Game"]
 
--- manage the model of our application over time
-model : Signal Model
-model =
-  Signal.foldp update initialModel actions.signal
-
-
-initialModel : Model
-initialModel = emptyModel
-
-
--- actions from user input
-actions : Signal.Mailbox Action
-actions =
-  Signal.mailbox NoOp
